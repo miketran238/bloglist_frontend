@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import ErrorMessage from './components/ErrorMessage'
 import Notification from './components/Notification'
 
 const App = () => {
@@ -9,6 +10,7 @@ const App = () => {
   const [blogs, setBlogs] = useState([])
 
   const [errorMessage, setErrorMessage] = useState(null)
+  const [notification, setNotification] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -36,6 +38,7 @@ const App = () => {
 
   const handleLogin = async (event) => {
     event.preventDefault()
+
     try {
       const user = await loginService.login({
         username, password,
@@ -43,16 +46,21 @@ const App = () => {
       window.localStorage.setItem(
         'loggedBlogAppUser', JSON.stringify(user)
       ) 
-      blogService.setToken(user)
+      //console.log(user)
+      blogService.setToken(user.token)
       
       setUser(user)
       setUsername('')
       setPassword('')
+      setNotification('Successfully Login')
+      setTimeout(() => {
+        setNotification(null)
+      }, 3000)
     } catch (exception) {
       setErrorMessage('Wrong credentials')
       setTimeout(() => {
         setErrorMessage(null)
-      }, 5000)
+      }, 3000)
     }
   }
 
@@ -61,16 +69,21 @@ const App = () => {
     setUser(null)
     setUsername('')
     setPassword('')
-    setErrorMessage('Successfully Logout')
+    setNotification('Successfully Logout')
+    setTimeout(() => {
+      setNotification(null)
+    }, 3000)
   }
 
   const addBlog = (event) => {
     event.preventDefault()
+    console.log(user)
     const blogObject = {
       title: newTitle,
       author: newAuthor,
       likes: newLikes,
       url: newUrl,
+      userId: user._id
     }
 
     if ( blogObject.title === '' || blogObject.author === '' ) {
@@ -144,7 +157,8 @@ const App = () => {
   return (
     <div>
       <h1>Blog List Application</h1>
-      <Notification message={errorMessage} />
+      <Notification message={notification} />
+      <ErrorMessage message={errorMessage} />
 
       {user === null ?
         loginForm() :
