@@ -1,25 +1,22 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import ErrorMessage from './components/ErrorMessage'
 import Notification from './components/Notification'
+import LoginForm from './components/LoginForm'
+import BlogForm from './components/BlogForm'
+import Togglable from './components/Togglable'
 
 const App = () => {
 
   const [blogs, setBlogs] = useState([])
-
   const [errorMessage, setErrorMessage] = useState(null)
   const [notification, setNotification] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-
-  // const [newBlog, setNewBlog] = useState('')
-  const [newTitle, setNewTitle] = useState('')
-  const [newAuthor, setNewAuthor] = useState('')
-  const [newLikes, setNewLikes] = useState('')
-  const [newUrl, setNewUrl] = useState('')
+  const blogFormRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -45,10 +42,10 @@ const App = () => {
       })
       window.localStorage.setItem(
         'loggedBlogAppUser', JSON.stringify(user)
-      ) 
+      )
       //console.log(user)
       blogService.setToken(user.token)
-      
+
       setUser(user)
       setUsername('')
       setPassword('')
@@ -75,91 +72,43 @@ const App = () => {
     }, 3000)
   }
 
-  const addBlog = (event) => {
-    event.preventDefault()
-    console.log(user)
-    const blogObject = {
-      title: newTitle,
-      author: newAuthor,
-      likes: newLikes,
-      url: newUrl,
-      userId: user._id
-    }
-
-    if ( blogObject.title === '' || blogObject.author === '' ) {
-      setErrorMessage('Author and title cannot be empty')
-      return;
-    }
-    blogService
-      .create(blogObject)
-      .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))
-        setNewAuthor('')
-        setNewTitle('')
-        setNewLikes('')
-        setNewUrl('')
-      })
-
-  }
-  const handleNewTitle = (event) => {
-    setNewTitle(event.target.value)
-  }
-
-  const handleNewAuthor = (event) => {
-    setNewAuthor(event.target.value)
-  }
-
-  const handleNewLikes = (event) => {
-    setNewLikes(event.target.value)
-  }
-
-  const handleNewUrl = (event) => {
-    setNewUrl(event.target.value)
-  }
-
   const loginForm = () => (
-    <form onSubmit={handleLogin}>
-      <div>
-        username
-          <input
-          type="text"
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
-      </div>
-      <div>
-        password
-          <input
-          type="password"
-          value={password}
-          name="Password"
-          onChange={({ target }) => setPassword(target.value)}
-        />
-      </div>
-      <button type="submit">login</button>
-    </form>
+    <LoginForm
+      username={username}
+      password={password}
+      handleUsernameChange={({ target }) => setUsername(target.value)}
+      handlePasswordChange={({ target }) => setPassword(target.value)}
+      handleSubmit={handleLogin}
+    />
   )
+
+  const addBlog = (blogObject) => {
+    // if (blogObject.title === undefined || blogObject.title === '') {
+    //   setErrorMessage('Title cannot be empty')
+    //   setTimeout(() => { setErrorMessage(null) }, 3000)
+    //   return;
+    // }
+    // else {
+      blogFormRef.current.toggleVisibility()
+      blogService
+        .create(blogObject)
+        .then(returnedBlog => {
+          setBlogs(blogs.concat(returnedBlog))
+        })
+      
+    // }
+  }
 
   const blogForm = () => (
-    <div>
-      <h2> Add a new Blog </h2>
-    <form onSubmit={addBlog}>
-      Title <input value={newTitle} onChange={handleNewTitle} /> <br></br>
-      Author <input value={newAuthor} onChange={handleNewAuthor} /> <br></br>
-      Likes <input value={newLikes} onChange={handleNewLikes} /> <br></br>
-      Url <input value={newUrl} onChange={handleNewUrl} /> <br></br>
-      <button type="submit">save</button>
-    </form>
-    </div>
+    <Togglable buttonLabel='new blog' ref={blogFormRef}>
+      <BlogForm createBlog={addBlog} user={user} />
+    </Togglable>
   )
-
   return (
     <div>
       <h1>Blog List Application</h1>
       <Notification message={notification} />
       <ErrorMessage message={errorMessage} />
-
       {user === null ?
         loginForm() :
         <div>
@@ -167,9 +116,9 @@ const App = () => {
           <button onClick={handleLogout}>Log Out</button> <br></br>
           {blogForm()}
           <h2>Blogs</h2>
-        {blogs.map(blog =>
-          <Blog key={blog.id} blog={blog} />
-        )}
+          {blogs.map(blog =>
+            <Blog key={blog.id} blog={blog} />
+          )}
         </div>
       }
     </div>
