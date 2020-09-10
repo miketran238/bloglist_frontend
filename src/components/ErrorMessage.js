@@ -1,5 +1,5 @@
 import React from 'react'
-import "./../notification.css"
+import './../notification.css'
 const ErrorMessage = ({ message }) => {
   if (message === null) {
     return null

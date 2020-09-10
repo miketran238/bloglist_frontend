@@ -1,18 +1,10 @@
-import React, {useState,useEffect} from 'react'
+import React, { useState } from 'react'
 import blogService from './../services/blogs'
 
-const Blog = ({ blog, user }) => 
-{
+const Blog = ({ blog, user }) => {
   const [toggle, setToggle] = useState(false)
   const [thisBlog, updateBlog] = useState(blog)
   const [deleted, setDeleted] = useState(false)
-
-  // useEffect(() => {
-  //   const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
-  //   if (loggedUserJSON) {
-  //     blogService.setToken = JSON.parse(loggedUserJSON).token
-  //   }
-  // }, [])
 
   const blogStyle = {
     paddingTop: 5,
@@ -28,10 +20,10 @@ const Blog = ({ blog, user }) =>
     setToggle(!toggle)
   }
 
-  const updateLike =() => {
-    const newBlog = {...thisBlog}
+  const updateLike = () => {
+    const newBlog = { ...thisBlog }
     newBlog.likes++
-    blogService.update(newBlog.id,newBlog)
+    blogService.update(newBlog.id, newBlog)
     updateBlog(newBlog)
   }
 
@@ -42,33 +34,33 @@ const Blog = ({ blog, user }) =>
 
   // console.log(thisBlog.user)
   // console.log(user)
-  
+
   return (
-    deleted === true ? 
-    <></>
-    :
-  <div style={blogStyle}>
-    {
-      toggle === true ? 
-      <>
-        {thisBlog.title} by {thisBlog.author} <br></br>
-        {thisBlog.url} <br></br>
-        likes {thisBlog.likes} <button onClick={updateLike}>like </button> <br></br>
-        {
-          thisBlog.user._id === user._id ? 
-          <button onClick={toDelete}> Delete! </button>
-          :
-          <></>
-        }  <button onClick={toggleVisible}> hide </button>
-      </>
+    deleted === true ?
+      <></>
       :
-      <>
+      <div style={blogStyle}>
+        {
+          toggle === true ?
+            <>
+              {thisBlog.title} by {thisBlog.author} <br></br>
+              {thisBlog.url} <br></br>
+        likes {thisBlog.likes} <button onClick={updateLike}>like </button> <br></br>
+              {
+                thisBlog.user._id === user._id ?
+                  <button onClick={toDelete}> Delete! </button>
+                  :
+                  <></>
+              }  <button onClick={toggleVisible}> hide </button>
+            </>
+            :
+            <>
 
-      {thisBlog.title} {thisBlog.author} <button onClick={toggleVisible}> view </button>
-      </>
-    }
+              {thisBlog.title} {thisBlog.author} <button onClick={toggleVisible}> view </button>
+            </>
+        }
 
-  </div>
+      </div>
   )
 }
 

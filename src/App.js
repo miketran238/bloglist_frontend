@@ -89,13 +89,13 @@ const App = () => {
     //   return;
     // }
     // else {
-      blogFormRef.current.toggleVisibility()
-      blogService
-        .create(blogObject)
-        .then(returnedBlog => {
-          setBlogs(blogs.concat(returnedBlog))
-        })
-      
+    blogFormRef.current.toggleVisibility()
+    blogService
+      .create(blogObject)
+      .then(returnedBlog => {
+        setBlogs(blogs.concat(returnedBlog))
+      })
+
     // }
   }
 
