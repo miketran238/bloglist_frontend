@@ -1,8 +1,12 @@
 import React, {useState} from 'react'
+import blogService from './../services/blogs'
 
-const Blog = ({ blog }) => 
+const Blog = ({ blog, user }) => 
 {
   const [toggle, setToggle] = useState(false)
+  const [thisBlog, updateBlog] = useState(blog)
+  const [deleted, setDeleted] = useState(false)
+
   const blogStyle = {
     paddingTop: 5,
     paddingLeft: 5,
@@ -18,24 +22,34 @@ const Blog = ({ blog }) =>
   }
 
   const updateLike =() => {
-    // blogService.
+    const newBlog = {...thisBlog}
+    newBlog.likes++
+    blogService.update(newBlog.id,newBlog)
+    updateBlog(newBlog)
   }
 
-  console.log(toggle)
+  const toDelete = () => {
+    setDeleted(true)
+    blogService.deleteBlog(thisBlog.id)
+  }
+
   return (
+    deleted === true ? 
+    <></>
+    :
   <div style={blogStyle}>
     {
       toggle === true ? 
       <>
-        {blog.title} by {blog.author} <br></br>
-        {blog.url} <br></br>
-        likes {blog.likes} <button onClick={updateLike}>like </button> <br></br>
-        <button> Delete! </button>  <button onClick={toggleVisible}> hide </button>
+        {thisBlog.title} by {thisBlog.author} <br></br>
+        {thisBlog.url} <br></br>
+        likes {thisBlog.likes} <button onClick={updateLike}>like </button> <br></br>
+        <button onClick={toDelete}> Delete! </button>  <button onClick={toggleVisible}> hide </button>
       </>
       :
       <>
 
-      {blog.title} {blog.author} <button onClick={toggleVisible}> view </button>
+      {thisBlog.title} {thisBlog.author} <button onClick={toggleVisible}> view </button>
       </>
     }
 
