@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useState,useEffect} from 'react'
 import blogService from './../services/blogs'
 
 const Blog = ({ blog, user }) => 
@@ -6,6 +6,13 @@ const Blog = ({ blog, user }) =>
   const [toggle, setToggle] = useState(false)
   const [thisBlog, updateBlog] = useState(blog)
   const [deleted, setDeleted] = useState(false)
+
+  // useEffect(() => {
+  //   const loggedUserJSON = window.localStorage.getItem('loggedBlogAppUser')
+  //   if (loggedUserJSON) {
+  //     blogService.setToken = JSON.parse(loggedUserJSON).token
+  //   }
+  // }, [])
 
   const blogStyle = {
     paddingTop: 5,
@@ -33,6 +40,9 @@ const Blog = ({ blog, user }) =>
     blogService.deleteBlog(thisBlog.id)
   }
 
+  // console.log(thisBlog.user)
+  // console.log(user)
+  
   return (
     deleted === true ? 
     <></>
@@ -44,7 +54,12 @@ const Blog = ({ blog, user }) =>
         {thisBlog.title} by {thisBlog.author} <br></br>
         {thisBlog.url} <br></br>
         likes {thisBlog.likes} <button onClick={updateLike}>like </button> <br></br>
-        <button onClick={toDelete}> Delete! </button>  <button onClick={toggleVisible}> hide </button>
+        {
+          thisBlog.user._id === user._id ? 
+          <button onClick={toDelete}> Delete! </button>
+          :
+          <></>
+        }  <button onClick={toggleVisible}> hide </button>
       </>
       :
       <>
