@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import blogService from './../services/blogs'
 
-const Blog = ({ blog, user }) => {
+const Blog = ({ blog, user, testLike }) => {
   const [toggle, setToggle] = useState(false)
   const [thisBlog, updateBlog] = useState(blog)
   const [deleted, setDeleted] = useState(false)
@@ -25,6 +25,7 @@ const Blog = ({ blog, user }) => {
     newBlog.likes++
     blogService.update(newBlog.id, newBlog)
     updateBlog(newBlog)
+    testLike() //This is only for testing purpose
   }
 
   const toDelete = () => {
@@ -42,22 +43,22 @@ const Blog = ({ blog, user }) => {
       <div style={blogStyle}>
         {
           toggle === true ?
-            <>
+            <li className='blog'>
               {thisBlog.title} by {thisBlog.author} <br></br>
               {thisBlog.url} <br></br>
         likes {thisBlog.likes} <button onClick={updateLike}>like </button> <br></br>
               {
-                thisBlog.user._id === user._id ?
+                thisBlog.user !== undefined && user !== undefined && thisBlog.user._id === user._id 
+                  ?
                   <button onClick={toDelete}> Delete! </button>
                   :
                   <></>
               }  <button onClick={toggleVisible}> hide </button>
-            </>
+            </li>
             :
-            <>
-
+            <li className='blog'>
               {thisBlog.title} {thisBlog.author} <button onClick={toggleVisible}> view </button>
-            </>
+            </li>
         }
 
       </div>

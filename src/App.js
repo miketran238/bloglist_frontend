@@ -116,9 +116,11 @@ const App = () => {
           <button onClick={handleLogout}>Log Out</button> <br></br>
           {blogForm()}
           <h2>Blogs</h2>
-          {blogs.map(blog =>
-            <Blog key={blog.id} blog={blog} user={user} />
-          )}
+          <ul>
+            {blogs.map(blog =>
+              <Blog key={blog.id} blog={blog} user={user} />
+            )}
+          </ul>
         </div>
       }
     </div>
