@@ -48,7 +48,7 @@ const Blog = ({ blog, user, testLike }) => {
               {thisBlog.url} <br></br>
         likes {thisBlog.likes} <button onClick={updateLike}>like </button> <br></br>
               {
-                thisBlog.user !== undefined && user !== undefined && thisBlog.user._id === user._id 
+                thisBlog.user !== undefined && user !== undefined && thisBlog.user._id === user._id
                   ?
                   <button onClick={toDelete}> Delete! </button>
                   :

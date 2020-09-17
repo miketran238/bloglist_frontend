@@ -6,7 +6,11 @@ module.exports = {
   "env": {
     "browser": true,
     "node": true,
-    "jest": true
+    "jest/globals": true,
+    "cypress/globals": true
+  },
+  "globals": {
+    "cy": true
   },
   "parserOptions": {
       "ecmaFeatures": {
@@ -17,7 +21,7 @@ module.exports = {
       "sourceType": "module"
   },
   "plugins": [
-      "react", "jest"
+      "react", "jest", "cypress"
   ],
   "rules": {
       "indent": [

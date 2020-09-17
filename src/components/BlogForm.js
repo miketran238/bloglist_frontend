@@ -21,6 +21,9 @@ const BlogForm = ({ createBlog, user }) => {
   }
 
   const addBlog = (event) => {
+    if (user === undefined) {
+      return
+    }
     event.preventDefault()
     createBlog({
       title: newTitle,
